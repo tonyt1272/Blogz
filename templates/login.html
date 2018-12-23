@@ -1,0 +1,31 @@
+{% extends "base.html" %} 
+
+{% block content %}
+<!-- <style>body {background-color: rgb(237, 248, 255);}</style> -->
+<body>
+<h1>Log in!</h1>
+<p>If you don't have an account, you may <a href="/register">register here.</a>
+<form action="/login" method="POST">
+	<table>
+		
+		<tr>
+			<td><label>Email</label></td>
+			<td><input name="email" type="email" value="{{form_email}}"/></td>
+			{% if e_mail_error and e_mail_error !='None'%}
+			<td class='error'>{{ e_mail_error }}</td>
+			{% endif %}
+		</tr>	
+		<tr>
+			<td><label>Password</label></td>
+			<td><input name="password" type="password" /></td>
+			{% if pass_word_error and pass_word_error !='None' %}
+			<td class='error'>{{ pass_word_error }}</td>
+			{% endif %}
+		</tr>
+	
+	</table>
+
+	<label><input type="submit" value="Login"/></label>
+</form>
+</body>
+{% endblock %}
