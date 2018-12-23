@@ -31,7 +31,7 @@
 			
 		
 		
-
+    	
 		{% with messages = get_flashed_messages(with_categories=True) %} <!-- set messages equal to 
 													 whatever is in flashed messages, but the message variable  is limited to this with block, also this
 													 clears the messages, with_categories gets the category -->
@@ -43,7 +43,7 @@
 			</ul>
 
 		{% endwith %}
-
+		
 		{% block content %}
 		{% endblock %}
 

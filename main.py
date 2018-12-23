@@ -70,11 +70,12 @@ def require_login():
 		return redirect('/login')
 ##-------------
 
-
+##Main page
 @app.route("/")
 def index():
 	encoded_error = request.args.get("error")
 	return render_template('/index.html')
+##----------
 
 ##Register new users
 @app.route("/register", methods=['GET', 'POST'])
@@ -88,7 +89,6 @@ def register():
 			flash('{} is not a valid email address'.format(email),'error')
 			return redirect('/register')
 
-        
 		if password != verify:
 			flash('password and verification do not match.','error')
 			
@@ -109,20 +109,29 @@ def register():
 		return render_template('register.html', title="Build a Blog Registration")
 ##-------------------
 
-
 ##Enter blog posts
 @app.route('/entry', methods = ['POST', 'GET'])
 def entry():
+	title_error=None
+	body_error=None
+	entry_error=False
 	if request.method == 'POST':
 		new_title = request.form['new_title']
 		new_entry = request.form['new_entry']
 		if not new_title:
-			flash('Please enter a title for your post','error')
-			return render_template('blog_entry.html',title="Add a Blog Entry", body=new_entry)
+			entry_error = True
+			title_error="Please enter a title for your post"
+			
 
 		if not new_entry:
-			flash("Please enter your blog post in the 'New entry' form below",'error')
-			return render_template('blog_entry.html',title="Add a Blog Entry", blog_title=new_title)
+			
+			entry_error = True
+			body_error="Please enter your blog post in the 'New entry' form above"
+			
+
+		if entry_error == True:
+			return render_template('blog_entry.html',title="Add a Blog Entry",
+				title_error=title_error,body_error=body_error, blog_title=new_title, body=new_entry)
 
 		return redirect('/')
 	else:
@@ -133,13 +142,9 @@ def entry():
 @app.route('/login', methods = ['POST','GET'])
 def login():
 	## Delete current session before allowing another login
-	# if 'user' in session:
-	# 	del session['user']
-
 	if 'email' in session:
 		del session['email']
 	##-----------------
-
 	if request.method == 'POST':
 		email = request.form['email']
 		password = request.form['password']
@@ -148,9 +153,7 @@ def login():
 		if user and user.password == password:		#If user exists and user.password = password entered
 			session['email'] = email #session object is a dictionary, here it is used to hold the
 									 #the user's email address
-
 			flash("Logged in")
-			
 			return redirect('/')
 		else:
 			flash('User password incorrect or user does not exist', 'error')
@@ -168,9 +171,6 @@ def logout():
 	
 	return redirect('/')
 ##---------
-
-
-    
 
 if __name__ == '__main__':
 	app.run()

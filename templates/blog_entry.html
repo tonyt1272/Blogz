@@ -7,6 +7,9 @@
     <div><label>
         Title of new entry:<br>
         <input name="new_title" type="text" value="{{blog_title}}"/>
+        {%if title_error%}
+        <br><span class=error> {{title_error}}</span>
+        {%endif %}
     </label>
     
     </div>
@@ -14,10 +17,13 @@
     <div><label>
         New entry:<br>
         <textarea rows="10" cols="30" name="new_entry" >{{body}}</textarea>
-        
+        {%if body_error%}
+        <br><span class=error> {{body_error}}</span>
+        {%endif %}
     </label>
     
     </div>
+
     <p><br>
     <input type="Submit" value="Add Entry"/>
     </p> 
@@ -25,3 +31,4 @@
 
 
 {% endblock %}
+
