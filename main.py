@@ -33,7 +33,8 @@ class Blog(db.Model):   # Creating persistent class that represents blog posts w
 		self.title = title  						#set the input title to the title value of the object				
 		self.body = body							#set the body of the object to the entered string
 		self.owner = owner							#owner is a user object for the blog post
-
+		pub_date = datetime.utcnow()
+		self.pub_date = pub_date
 
 class User(db.Model):
 
