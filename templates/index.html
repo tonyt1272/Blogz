@@ -2,7 +2,11 @@
 {% block content %}
 
 
-  <h1>Under Construction</h1>
+  {% for post in user_posts %}
+  <h2>{{post.title}}</h2>
+  <p>{{post.body}}</p>
+  <hr>
+  {% endfor %}
   
 
 

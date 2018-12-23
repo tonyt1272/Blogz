@@ -29,7 +29,7 @@ class Blog(db.Model):   # Creating persistent class that represents blog posts w
 													#associated with the owner passed to Task				
 	pub_date = db.Column(db.DateTime)
 
-	def __init__(self,name,owner):					#constructor that creates an instance
+	def __init__(self,title,body,owner):			#constructor that creates an instance
 		self.title = title  						#set the input title to the title value of the object				
 		self.body = body							#set the body of the object to the entered string
 		self.owner = owner							#owner is a user object for the blog post
@@ -74,7 +74,9 @@ def require_login():
 @app.route("/")
 def index():
 	encoded_error = request.args.get("error")
-	return render_template('/index.html')
+	user = User.query.filter_by(email=session['email']).first()
+	user_posts = Blog.query.filter_by(owner=user).all()
+	return render_template('/index.html',title="Build a Blog",user_posts=user_posts)
 ##----------
 
 ##Register new users
@@ -112,26 +114,29 @@ def register():
 ##Enter blog posts
 @app.route('/entry', methods = ['POST', 'GET'])
 def entry():
+	user = User.query.filter_by(email=session['email']).first() #match current viewer in db
 	title_error=None
 	body_error=None
 	entry_error=False
 	if request.method == 'POST':
 		new_title = request.form['new_title']
 		new_entry = request.form['new_entry']
+
 		if not new_title:
 			entry_error = True
 			title_error="Please enter a title for your post"
 			
-
 		if not new_entry:
-			
 			entry_error = True
 			body_error="Please enter your blog post in the 'New entry' form above"
 			
-
 		if entry_error == True:
 			return render_template('blog_entry.html',title="Add a Blog Entry",
 				title_error=title_error,body_error=body_error, blog_title=new_title, body=new_entry)
+
+		blog = Blog(new_title,new_entry,user) #create a movie object to add to viewer's table
+		db.session.add(blog)
+		db.session.commit()
 
 		return redirect('/')
 	else:
@@ -153,7 +158,7 @@ def login():
 		if user and user.password == password:		#If user exists and user.password = password entered
 			session['email'] = email #session object is a dictionary, here it is used to hold the
 									 #the user's email address
-			flash("Logged in")
+			#flash("Logged in")
 			return redirect('/')
 		else:
 			flash('User password incorrect or user does not exist', 'error')
