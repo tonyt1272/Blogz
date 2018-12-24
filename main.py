@@ -211,7 +211,7 @@ def unhide():
 @app.route('/delete', methods= ['POST'])
 def delete():
 	if 'be_sure' not in request.form:  #verifying users intent to delete
-		flash('Are you sure?  If you are click delete again.','error')
+		flash('Are you sure?  If you are, click delete again.','error')
 		flash("If you have changed your mind just go back to the Main Blog Page.",'error')
 		be_sure = True
 		post_id = request.form['post_id']
