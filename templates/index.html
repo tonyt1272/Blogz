@@ -1,10 +1,12 @@
 {% extends "base.html" %}
 {% block content %}
-
-  <h2 class="direction">click to view</h2>
+  {%if user_posts%}
+  <h3 class="direction">click post to view</h3>
+  {%endif%}
   {% for post in user_posts %}
-  <div ><h2 id="title_time">{{post.title}} </h2>&nbsp&nbsp{{post.pub_date}}</div>
-  <p>{{post.body[0:100]}}...</p>
+  <div ><h2 id="title_time"><a href="/display_entry?date_time={{post.pub_date}}">
+  {{post.title}}</a> </h2>&nbsp&nbsp posted at:&nbsp{{post.pub_date}}</div>
+  <p>{{post.body[0:70]}}...</p>
   <hr>
   {% endfor %}
   

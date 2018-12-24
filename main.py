@@ -1,6 +1,7 @@
 from flask import Flask, request, redirect, render_template, session, flash #Imports for Flask server
 from datetime import datetime
 import re
+
 from flask_sqlalchemy import SQLAlchemy #Importing necessary sqlalchemy tools for using
 										#the SQL database, the SQLAlchemy class is imported
 										#from the flask_sqlalchemy module.
@@ -76,7 +77,7 @@ def require_login():
 def index():
 	encoded_error = request.args.get("error")
 	user = User.query.filter_by(email=session['email']).first()
-	user_posts = Blog.query.filter_by(owner=user).all()
+	user_posts = Blog.query.filter_by(owner=user).order_by(Blog.pub_date.desc()).all()
 	return render_template('/index.html',title="Build a Blog",user_posts=user_posts)
 ##----------
 
@@ -133,15 +134,31 @@ def entry():
 			
 		if entry_error == True:
 			return render_template('blog_entry.html',title="Add a Blog Entry",
-				title_error=title_error,body_error=body_error, blog_title=new_title, body=new_entry)
+				title_error=title_error, body_error=body_error, blog_title=new_title, body=new_entry)
 
-		blog = Blog(new_title,new_entry,user) #create a movie object to add to viewer's table
+		blog = Blog(new_title, new_entry, user)
+		post_body = blog.body 
+		post_title = blog.title
 		db.session.add(blog)
 		db.session.commit()
-
-		return redirect('/')
+		return render_template("display_entry.html",title=post_title, post_body=post_body) 
+		#return redirect('/')
 	else:
 		return render_template('blog_entry.html',title="Add a Blog Entry")
+##--------------
+
+##Display entry
+@app.route('/display_entry', methods = ['GET'])
+def display_entry():
+	pub_date = request.args.get('date_time')
+	user = User.query.filter_by(email=session['email']).first()
+	owner_id = user.id
+	post = Blog.query.filter_by(owner_id=owner_id, pub_date=pub_date).first()
+	title = post.title
+	post_body = post.body
+	return render_template("display_entry.html",title=title, post_body=post_body) 
+
+
 ##--------------
 
 ##Existing user login
