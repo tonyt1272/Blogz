@@ -5,7 +5,6 @@ import re
 from flask_sqlalchemy import SQLAlchemy #Importing necessary sqlalchemy tools for using
 										#the SQL database, the SQLAlchemy class is imported
 										#from the flask_sqlalchemy module.
-
 app = Flask(__name__)
 app.config['DEBUG'] = True
 
@@ -48,8 +47,7 @@ class User(db.Model):
 	blogs = db.relationship('Blog', backref='owner')#This is NOT a column, it is a relationship
 													#that populates tasks list with task objects from the Task 
 													#table such that the owner property is equal to this
-													#specific user object.
-													# 
+													#specific user object. 
 	def __init__(self, email, password):
 		self.email = email
 		self.password = password
@@ -99,7 +97,6 @@ def register():
 
 		if password != verify:
 			flash('password and verification do not match.','error')
-			
 			return render_template('register.html',form_email=email,title="Build a Blog Registration")
         
 		existing_user = User.query.filter_by(email=email).first()
@@ -111,16 +108,15 @@ def register():
 		db.session.add(user)
 		db.session.commit()
 		session['email'] = user.email
-		#flash("Logged in")
 		return redirect("/")
 	else:
 		return render_template('register.html', title="Build a Blog Registration")
 ##-------------------
 
-##Enter blog posts
+##Enter blog post
 @app.route('/entry', methods = ['POST', 'GET'])
 def entry():
-	user = User.query.filter_by(email=session['email']).first() #match current viewer in db
+	user = User.query.filter_by(email=session['email']).first() #match current userr in db
 	title_error=None
 	body_error=None
 	entry_error=False
@@ -145,8 +141,10 @@ def entry():
 		post_title = blog.title
 		db.session.add(blog)
 		db.session.commit()
-		return render_template("display_entry.html",title=post_title, post_body=post_body) 
-		#return redirect('/')
+		post_id = blog.id #the id gets assigned after the commit
+		return render_template("display_entry.html",title=post_title, post_body=post_body, post_id=post_id, post_hidden=False) 
+		
+
 	else:
 		return render_template('blog_entry.html',title="Add a Blog Entry")
 ##--------------
@@ -180,7 +178,6 @@ def login():
 		if user and user.password == password:		#If user exists and user.password = password entered
 			session['email'] = email #session object is a dictionary, here it is used to hold the
 									 #the user's email address
-			#flash("Logged in")
 			return redirect('/')
 		else:
 			flash('User password incorrect or user does not exist', 'error')
@@ -213,7 +210,6 @@ def unhide():
 ##Delete post
 @app.route('/delete', methods= ['POST'])
 def delete():
-	
 	if 'be_sure' not in request.form:  #verifying users intent to delete
 		flash('Are you sure?  If you are click delete again.','error')
 		flash("If you have changed your mind just go back to the Main Blog Page.",'error')
@@ -226,7 +222,7 @@ def delete():
 		post_hidden = post.hidden
 		return render_template("display_entry.html",title=title, 
 			post_body=post_body, post_id=post_id, post_hidden=post_hidden, be_sure = be_sure)
-		
+
 	post_id = request.form['post_id']
 	delete_post = Blog.query.get(post_id)
 	db.session.delete(delete_post)
@@ -237,10 +233,9 @@ def delete():
 ##log out
 @app.route('/logout')
 def logout():
-	
 	if 'email' in session:
 		del session['email']
-	
+
 	return redirect('/')
 ##---------
 
