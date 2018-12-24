@@ -29,6 +29,7 @@ class Blog(db.Model):   # Creating persistent class that represents blog posts w
 													#and its value will be the the 'user.id'
 													#associated with the owner passed to Task				
 	pub_date = db.Column(db.DateTime)
+	#hidden = db.Column(db.Boolean)
 
 	def __init__(self,title,body,owner):			#constructor that creates an instance
 		self.title = title  						#set the input title to the title value of the object				
@@ -36,6 +37,7 @@ class Blog(db.Model):   # Creating persistent class that represents blog posts w
 		self.owner = owner							#owner is a user object for the blog post
 		pub_date = datetime.utcnow()
 		self.pub_date = pub_date
+		#self.hidden = False
 
 class User(db.Model):
 
@@ -187,8 +189,7 @@ def login():
 ##log out
 @app.route('/logout')
 def logout():
-	# if 'user' in session:
-	# 	del session['user']
+	
 	if 'email' in session:
 		del session['email']
 	
