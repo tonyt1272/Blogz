@@ -29,7 +29,7 @@ class Blog(db.Model):   # Creating persistent class that represents blog posts w
 													#and its value will be the the 'user.id'
 													#associated with the owner passed to Task				
 	pub_date = db.Column(db.DateTime)
-	#hidden = db.Column(db.Boolean)
+	hidden = db.Column(db.Boolean)
 
 	def __init__(self,title,body,owner):			#constructor that creates an instance
 		self.title = title  						#set the input title to the title value of the object				
@@ -37,7 +37,7 @@ class Blog(db.Model):   # Creating persistent class that represents blog posts w
 		self.owner = owner							#owner is a user object for the blog post
 		pub_date = datetime.utcnow()
 		self.pub_date = pub_date
-		#self.hidden = False
+		self.hidden = False
 
 class User(db.Model):
 
@@ -79,8 +79,10 @@ def require_login():
 def index():
 	encoded_error = request.args.get("error")
 	user = User.query.filter_by(email=session['email']).first()
-	user_posts = Blog.query.filter_by(owner=user).order_by(Blog.pub_date.desc()).all()
-	return render_template('/index.html',title="Build a Blog",user_posts=user_posts)
+	user_posts = Blog.query.filter_by(owner=user, hidden=False).order_by(Blog.pub_date.desc()).all()
+	hidden_user_posts = Blog.query.filter_by(owner=user, hidden=True).order_by(Blog.pub_date.desc()).all()
+	return render_template('/index.html',title="Build a Blog",user_posts=user_posts,
+		hidden_user_posts=hidden_user_posts)
 ##----------
 
 ##Register new users
@@ -109,7 +111,7 @@ def register():
 		db.session.add(user)
 		db.session.commit()
 		session['email'] = user.email
-		flash("Logged in")
+		#flash("Logged in")
 		return redirect("/")
 	else:
 		return render_template('register.html', title="Build a Blog Registration")
@@ -158,9 +160,9 @@ def display_entry():
 	post = Blog.query.filter_by(owner_id=owner_id, pub_date=pub_date).first()
 	title = post.title
 	post_body = post.body
-	return render_template("display_entry.html",title=title, post_body=post_body) 
-
-
+	post_id = post.id
+	post_hidden = post.hidden
+	return render_template("display_entry.html",title=title, post_body=post_body, post_id=post_id, post_hidden=post_hidden) 
 ##--------------
 
 ##Existing user login
@@ -184,7 +186,53 @@ def login():
 			flash('User password incorrect or user does not exist', 'error')
 
 	return render_template('login.html', title="Build a Blog Log in")
-##----------
+##-----------
+
+##Hide post
+@app.route('/hide', methods= ['POST'])
+def hide():
+	post_id = request.form['post_id']
+	hide_post = Blog.query.get(post_id)
+	hide_post.hidden = True
+	db.session.add(hide_post)
+	db.session.commit()
+	return redirect('/')
+##-----------
+
+##unHide post
+@app.route('/unhide', methods= ['POST'])
+def unhide():
+	post_id = request.form['post_id']
+	unhide_post = Blog.query.get(post_id)
+	unhide_post.hidden = False
+	db.session.add(unhide_post)
+	db.session.commit()
+	return redirect('/')
+##-----------
+
+##Delete post
+@app.route('/delete', methods= ['POST'])
+def delete():
+	
+	if 'be_sure' not in request.form:  #verifying users intent to delete
+		flash('Are you sure?  If you are click delete again.','error')
+		flash("If you have changed your mind just go back to the Main Blog Page.",'error')
+		be_sure = True
+		post_id = request.form['post_id']
+		post = Blog.query.get(post_id)
+		title = post.title
+		post_body = post.body
+		post_id = post.id
+		post_hidden = post.hidden
+		return render_template("display_entry.html",title=title, 
+			post_body=post_body, post_id=post_id, post_hidden=post_hidden, be_sure = be_sure)
+		
+	post_id = request.form['post_id']
+	delete_post = Blog.query.get(post_id)
+	db.session.delete(delete_post)
+	db.session.commit()
+	return redirect('/')
+##------------
 
 ##log out
 @app.route('/logout')

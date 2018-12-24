@@ -3,7 +3,17 @@
 		font-style: italic;
 	}
 
+.caution {
+		color: blue;
+		font-style: italic;
+	}
+	
+
 	#title_time {
+		display: inline-block;
+	}
+
+	#delete {
 		display: inline-block;
 	}
 	.post {

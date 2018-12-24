@@ -2,8 +2,35 @@
 {% block content %}
 
   
-  
+  {% if not post_hidden %}
   <p class="post">{{post_body}}</p>
+  <form action="/hide" method="POST">
+  		<input name="post_id" value="{{post_id}}" type="hidden" />
+  		<input class="caution" type="submit" value="Hide Post"/>
+  </form>
+  {% else %}
+  <p class="post">{{post_body}}</p>
+  <table>
+  	<tr>
+	  	<td>
+	  		<form action="/unhide" method="POST">
+	  		<input name="post_id" value="{{post_id}}" type="hidden" />
+	  		<input class="caution" type="submit" value="Unhide Post"/>
+	  		</form>
+	  	</td>
+	  	<td>
+			<form  action="/delete" method="POST">
+  			<input name="post_id" value="{{post_id}}" type="hidden" />
+  			<input class="error" type="submit" value="Delete Post"/>
+  			{% if be_sure %}
+  			<input name="be_sure" value=True type="hidden" />
+  			{% endif %}
+  			</form>
+	  	</td>
+	 </tr>
+  
+</table>
+  {% endif %}
   
   
 
