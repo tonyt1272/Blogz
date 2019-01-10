@@ -10,7 +10,7 @@ app.config['DEBUG'] = True
 
 ##Configures the application to connect to the database
 ##  									typedb	drive		username:password	server	port	dbname		
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://build-a-blog:MyNewPass@localhost:8889/build-a-blog'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://blogz:MyNewPass@localhost:8889/blogz'
 app.config['SQLALCHEMY_ECHO'] = True
 db = SQLAlchemy(app)	#The constructor function recievs the app object and creates a 
 						#database object
@@ -41,6 +41,7 @@ class Blog(db.Model):   # Creating persistent class that represents blog posts w
 class User(db.Model):
 
 	id = db.Column(db.Integer, primary_key=True)
+	user_name = db.Column(db.String(120), unique=True)
 	email = db.Column(db.String(120), unique=True)  #unique=True, Not possible to add two
 													#different recotds with the same email
 	password = db.Column(db.String(120))
@@ -48,9 +49,10 @@ class User(db.Model):
 													#that populates tasks list with task objects from the Task 
 													#table such that the owner property is equal to this
 													#specific user object. 
-	def __init__(self, email, password):
+	def __init__(self, email, password,user_name):
 		self.email = email
 		self.password = password
+		self.user_name = user_name
 ##-----------------------------------------------------------------------------------------
 
 ## user email validation
@@ -128,27 +130,52 @@ def all_posts():
 def register():
 	if request.method == 'POST':
 		email = request.form['email']
+		user_name = request.form['user_name']
 		password = request.form['password']
 		verify = request.form['vpassword']
 
+		existing_user = User.query.filter_by(email=email).first()
+		existing_user_name = User.query.filter_by(user_name=user_name).first()
+		if existing_user:
+			flash('user with email {} already exists.'.format(email),'error')
+			#return redirect('/register')
+			return render_template('register.html',form_email=email,title="Blogz Registration",
+				form_user_name=user_name)
+
+		if existing_user_name:
+			flash('user with user_name {} already exists.'.format(user_name),'error')
+			#return redirect('/register')
+			return render_template('register.html',form_email=email,title="Blogz Registration",
+				form_user_name=user_name)
+
 		if not is_email(email):
 			flash('{} is not a valid email address'.format(email),'error')
-			return redirect('/register')
+			#return redirect('/register')
+			return render_template('register.html',form_email=email,title="Blogz Registration",
+				form_user_name=user_name)
+
+		if not user_name:
+			flash('please choose a user name','error')
+			return render_template('register.html',form_email=email,title="Blogz Registration",
+				form_user_name=user_name)
+			#return redirect('/register')
 
 		if password != verify:
 			flash('password and verification do not match.','error')
-			return render_template('register.html',form_email=email,title="Build a Blog Registration")
-        
-		existing_user = User.query.filter_by(email=email).first()
-		if existing_user:
-			flash('user with email {} already exists.'.format(email),'error')
-			return redirect('/register')
-        
-		user = User(email=email, password=password)
+			return render_template('register.html',form_email=email,title="Blogz Registration",
+				form_user_name=user_name)
+
+		if not password:
+			flash('please anter and verify password.','error')
+			return render_template('register.html',form_email=email,title="Blogz Registration",
+				form_user_name=user_name)
+     
+		user = User(email=email, password=password,user_name=user_name)
 		db.session.add(user)
 		db.session.commit()
 		session['email'] = user.email
-		return redirect("/")
+		session['user_name'] = user.user_name
+		return redirect("/entry")
 	else:
 		return render_template('register.html', title="Build a Blog Registration")
 ##-------------------
@@ -197,6 +224,7 @@ def display_entry():
 	user_email = request.args.get('email')
 	#user = User.query.filter_by(email=session['email']).first()
 	user = User.query.filter_by(email=user_email).first()
+	user_name=user.user_name
 	owner_id = user.id
 	post = Blog.query.filter_by(owner_id=owner_id, pub_date=pub_date).first()
 	title = post.title
@@ -204,7 +232,7 @@ def display_entry():
 	post_id = post.id
 	post_hidden = post.hidden
 	return render_template("display_entry.html",title=title, post_body=post_body,
-	 post_id=post_id, post_hidden=post_hidden,user_email=user_email) 
+	 post_id=post_id, post_hidden=post_hidden,user_email=user_email,user_name=user_name) 
 ##--------------
 
 ##Home----------
@@ -221,6 +249,7 @@ def login():
 	## Delete current session before allowing another login
 	if 'email' in session:
 		del session['email']
+		del session['user_name']
 	##-----------------
 	if request.method == 'POST':
 		email = request.form['email']
@@ -230,6 +259,7 @@ def login():
 		if user and user.password == password:		#If user exists and user.password = password entered
 			session['email'] = email #session object is a dictionary, here it is used to hold the
 									 #the user's email address
+			session['user_name'] = user.user_name
 			return redirect('/entry')
 		else:
 			flash('User password incorrect or user does not exist', 'error')
@@ -287,8 +317,8 @@ def delete():
 def logout():
 	if 'email' in session:
 		del session['email']
-
-	return redirect('/')
+		del session['user_name']
+	return redirect('/all_posts')
 ##---------
 
 if __name__ == '__main__':

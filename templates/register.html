@@ -13,6 +13,13 @@
 			{% if e_mail_error and e_mail_error !='None'%}
 			<td class='error'>{{ e_mail_error }}</td>
 			{% endif %}
+		</tr>
+		<tr>
+			<td><label>User Name</label></td>
+			<td><input name="user_name" type="text" value="{{form_user_name}}"></td>
+			{% if user_name_error and user_name_error !='None'%}
+			<td class='error'>{{ user_name_error }}</td>
+			{% endif %}
 		</tr>	
 		<tr>
 			<td><label>Password</label></td>

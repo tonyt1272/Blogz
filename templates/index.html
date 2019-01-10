@@ -6,10 +6,10 @@
   <h3 class="direction">No new posts to view</h3>
   {%endif%}
   {% for post in user_posts %}
-  <div ><h2 id="title_time"><a href="/display_entry?date_time={{post.pub_date}}&email={{email}}&hidden=0">
+  <div ><h2 id="title_time"><a href="/display_entry?date_time={{post.pub_date}}&email={{post.owner.email}}&hidden=0">
   {{post.title}}</a> </h2>&nbsp&nbsp posted at:&nbsp{{post.pub_date}}</div>
   <p>{{post.body[0:70]}}...</p>
-  <p class="author">written by <a href='/'>{{post.owner.email}}</a></p>
+  <p class="author">written by <a href='/'>{{post.owner.user_name}}</a></p>
   <hr>
   {% endfor %}
   <hr>

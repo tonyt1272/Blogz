@@ -4,7 +4,7 @@
   
   {% if not post_hidden %}
   <p class="post">{{post_body}}</p>
-  <p class="author">written by <a href='/'>{{user_email}}</a></p>
+  <p class="author">written by <a href='/'>{{user_name}}</a></p>
   <form action="/hide" method="POST">
   		<input name="post_id" value="{{post_id}}" type="hidden" />
   		<input class="caution" type="submit" value="Hide Post"/>
