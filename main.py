@@ -108,7 +108,7 @@ def single_user_posts():
 	user = User.query.filter_by(email=user_email).first()
 	user_posts = Blog.query.filter_by(owner=user, hidden=False).order_by(Blog.pub_date.desc()).all()
 	hidden_user_posts = Blog.query.filter_by(owner=user, hidden=True).order_by(Blog.pub_date.desc()).all()
-	return render_template('/index.html',title="Blogz",user_posts=user_posts,
+	return render_template('/all_posts.html',title="Blogz",user_posts=user_posts,
 		hidden_user_posts=hidden_user_posts,email=user_email)
 ##----------
 
@@ -275,7 +275,7 @@ def hide():
 	hide_post.hidden = True
 	db.session.add(hide_post)
 	db.session.commit()
-	return redirect('/')
+	return redirect('/all_posts')
 ##-----------
 
 ##unHide post
@@ -286,7 +286,7 @@ def unhide():
 	unhide_post.hidden = False
 	db.session.add(unhide_post)
 	db.session.commit()
-	return redirect('/')
+	return redirect('/all_posts')
 ##-----------
 
 ##Delete post
@@ -309,7 +309,7 @@ def delete():
 	delete_post = Blog.query.get(post_id)
 	db.session.delete(delete_post)
 	db.session.commit()
-	return redirect('/')
+	return redirect('/all_posts')
 ##------------
 
 ##log out
