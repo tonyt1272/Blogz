@@ -81,9 +81,10 @@ def get_all_posts():
 ##login wall
 @app.before_request	#special decorator tells flask to run this function before any request
 def require_login():
-	allowed_routes = ['login', 'register', 'home', 'all_posts', 'display_entry']
-	print(session)
+	allowed_routes = ['login', 'register', 'home', 'all_posts', 'display_entry','single_user_posts']
 	if request.endpoint not in allowed_routes and 'email' not in session:
+		if request.endpoint == 'entry':
+			return redirect('/login')
 		return redirect('/home')
 ##-------------
 
@@ -94,9 +95,21 @@ def index():
 	user = User.query.filter_by(email=session['email']).first()
 	user_posts = Blog.query.filter_by(owner=user, hidden=False).order_by(Blog.pub_date.desc()).all()
 	hidden_user_posts = Blog.query.filter_by(owner=user, hidden=True).order_by(Blog.pub_date.desc()).all()
-	return render_template('/index.html',title="Build a Blog",user_posts=user_posts,
+	return render_template('/index.html',title="Blogz",user_posts=user_posts,
 		hidden_user_posts=hidden_user_posts)
 ##----------
+
+@app.route("/single_user_posts")
+def single_user_posts():
+	encoded_error = request.args.get("error")
+	user_email = request.args.get("email")
+	user = User.query.filter_by(email=user_email).first()
+	user_posts = Blog.query.filter_by(owner=user, hidden=False).order_by(Blog.pub_date.desc()).all()
+	hidden_user_posts = Blog.query.filter_by(owner=user, hidden=True).order_by(Blog.pub_date.desc()).all()
+	return render_template('/index.html',title="Blogz",user_posts=user_posts,
+		hidden_user_posts=hidden_user_posts,email=user_email)
+##----------
+
 
 ##all_posts
 @app.route("/all_posts")
@@ -169,7 +182,8 @@ def entry():
 		db.session.add(blog)
 		db.session.commit()
 		post_id = blog.id #the id gets assigned after the commit
-		return render_template("display_entry.html",title=post_title, post_body=post_body, post_id=post_id, post_hidden=False) 
+		return render_template("display_entry.html",title=post_title, post_body=post_body, post_id=post_id, post_hidden=False,
+			user_email=session['email']) 
 		
 
 	else:
