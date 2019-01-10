@@ -63,10 +63,19 @@ def is_email(string):#Regular expression for email validation
 		return False
 ##-------------
 
+## get current users----
+def get_current_users():
+	users=User.query.all()
+	return users
+
+##--------------------
+
+
+
 ##login wall
 @app.before_request	#special decorator tells flask to run this function before any request
 def require_login():
-	allowed_routes = ['login', 'register']
+	allowed_routes = ['login', 'register', 'home']
 	print(session)
 	if request.endpoint not in allowed_routes and 'email' not in session:
 		return redirect('/login')
@@ -162,6 +171,14 @@ def display_entry():
 	post_hidden = post.hidden
 	return render_template("display_entry.html",title=title, post_body=post_body, post_id=post_id, post_hidden=post_hidden) 
 ##--------------
+
+##Home----------
+@app.route('/home')
+def home():
+	users=get_current_users()
+	return render_template('home.html', title="Blogz",users=users)
+##--------------
+
 
 ##Existing user login
 @app.route('/login', methods = ['POST','GET'])

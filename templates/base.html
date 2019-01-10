@@ -4,15 +4,21 @@
 		<meta charset = "utf-8">
 		<link rel="stylesheet" href="{{ url_for('static', filename='style.css')}}">
 		<link rel="shortcut icon" type="image/ico" href="/static/favicon.ico">
-		<title>Build a Blog</title>
+		<title>Blogz</title>
 	</head>
 	<body>
-		{% if 'email' in session %}
-    		<a href='/'>Main Blog Page </a><span>&nbsp&nbsp&nbsp</span>
-    		<a href='entry'>Add a Blog Entry </a>
-    		{% endif %}
+		<table style='display: inline-block'>
+			<tr>
+				<td><a href='/home'>home</a>&nbsp&nbsp</td>
+				<td><a href='/home'>all posts</a>&nbsp&nbsp</td>
+				<td><a href='/home'>new post</a></td>
 
-    		<div style='float: right'>
+
+			</tr>
+		</table>
+		
+
+    		<span style='float: right'>
         {% if 'email' in session %}
         {{session['email']}}:&nbsp
         <a href="logout">logout</a>
@@ -20,7 +26,7 @@
             <a href="login">login</a> | <a href="register">register</a>
         {% endif %}
          
-        </div> 
+        </span> 
     		<center><h1>{{title}}</h1></center>
 		
 		{% with messages = get_flashed_messages(with_categories=True) %} <!-- set messages equal to 
@@ -39,3 +45,8 @@
 
 	</body>
 </html>
+
+<!-- {% if 'email' in session %}
+    		<a href='/'>Main Blog Page </a><span>&nbsp&nbsp&nbsp</span>
+    		<a href='entry'>Add a Blog Entry </a>
+    		{% endif %} -->
