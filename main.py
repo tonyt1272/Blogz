@@ -70,15 +70,21 @@ def get_current_users():
 
 ##--------------------
 
+## get current users----
+def get_all_posts():
+	user_posts = Blog.query.filter_by(hidden=False).order_by(Blog.pub_date.desc()).all()
+	return user_posts
+
+##--------------------
 
 
 ##login wall
 @app.before_request	#special decorator tells flask to run this function before any request
 def require_login():
-	allowed_routes = ['login', 'register', 'home']
+	allowed_routes = ['login', 'register', 'home', 'all_posts', 'display_entry']
 	print(session)
 	if request.endpoint not in allowed_routes and 'email' not in session:
-		return redirect('/login')
+		return redirect('/home')
 ##-------------
 
 ##Main page
@@ -90,6 +96,18 @@ def index():
 	hidden_user_posts = Blog.query.filter_by(owner=user, hidden=True).order_by(Blog.pub_date.desc()).all()
 	return render_template('/index.html',title="Build a Blog",user_posts=user_posts,
 		hidden_user_posts=hidden_user_posts)
+##----------
+
+##all_posts
+@app.route("/all_posts")
+def all_posts():
+	encoded_error = request.args.get("error")
+	if 'email' in session:
+		user = User.query.filter_by(email=session['email']).first()
+	user_posts = get_all_posts()
+	#user_posts = Blog.query.filter_by(owner=user, hidden=False).order_by(Blog.pub_date.desc()).all()
+	#hidden_user_posts = Blog.query.filter_by(owner=user, hidden=True).order_by(Blog.pub_date.desc()).all()
+	return render_template('/all_posts.html',title="Blogz",user_posts=user_posts)
 ##----------
 
 ##Register new users
@@ -162,14 +180,17 @@ def entry():
 @app.route('/display_entry', methods = ['GET'])
 def display_entry():
 	pub_date = request.args.get('date_time')
-	user = User.query.filter_by(email=session['email']).first()
+	user_email = request.args.get('email')
+	#user = User.query.filter_by(email=session['email']).first()
+	user = User.query.filter_by(email=user_email).first()
 	owner_id = user.id
 	post = Blog.query.filter_by(owner_id=owner_id, pub_date=pub_date).first()
 	title = post.title
 	post_body = post.body
 	post_id = post.id
 	post_hidden = post.hidden
-	return render_template("display_entry.html",title=title, post_body=post_body, post_id=post_id, post_hidden=post_hidden) 
+	return render_template("display_entry.html",title=title, post_body=post_body,
+	 post_id=post_id, post_hidden=post_hidden,user_email=user_email) 
 ##--------------
 
 ##Home----------
@@ -195,11 +216,11 @@ def login():
 		if user and user.password == password:		#If user exists and user.password = password entered
 			session['email'] = email #session object is a dictionary, here it is used to hold the
 									 #the user's email address
-			return redirect('/')
+			return redirect('/entry')
 		else:
 			flash('User password incorrect or user does not exist', 'error')
 
-	return render_template('login.html', title="Build a Blog Log in")
+	return render_template('/login.html', title="Blogz Log in")
 ##-----------
 
 ##Hide post

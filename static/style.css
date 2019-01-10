@@ -3,11 +3,16 @@
 		font-style: italic;
 	}
 
+
 .caution {
 		color: blue;
 		font-style: italic;
 	}
-	
+
+.author {
+		
+		font-style: italic;
+	}	
 
 	#title_time {
 		display: inline-block;
