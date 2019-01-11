@@ -1,6 +1,7 @@
 from flask import Flask, request, redirect, render_template, session, flash #Imports for Flask server
 from datetime import datetime
 import re
+from hash_utils import make_pw_hash, check_pw_hash
 
 from flask_sqlalchemy import SQLAlchemy #Importing necessary sqlalchemy tools for using
 										#the SQL database, the SQLAlchemy class is imported
@@ -44,14 +45,14 @@ class User(db.Model):
 	user_name = db.Column(db.String(120), unique=True)
 	email = db.Column(db.String(120), unique=True)  #unique=True, Not possible to add two
 													#different recotds with the same email
-	password = db.Column(db.String(120))
+	pw_hash = db.Column(db.String(120))
 	blogs = db.relationship('Blog', backref='owner')#This is NOT a column, it is a relationship
 													#that populates tasks list with task objects from the Task 
 													#table such that the owner property is equal to this
 													#specific user object. 
 	def __init__(self, email, password,user_name):
 		self.email = email
-		self.password = password
+		self.pw_hash= make_pw_hash(password)
 		self.user_name = user_name
 ##-----------------------------------------------------------------------------------------
 
@@ -264,7 +265,7 @@ def login():
 		password = request.form['password']
 		user = User.query.filter_by(email=email).first() #.first() returns the first user object
 														#If no email match, returns python None			
-		if user and user.password == password:		#If user exists and user.password = password entered
+		if user and check_pw_hash(password,user.pw_hash):		#If user exists and user.password = password entered
 			session['email'] = email #session object is a dictionary, here it is used to hold the
 									 #the user's email address
 			session['user_name'] = user.user_name
