@@ -1,6 +1,7 @@
 from flask import Flask, request, redirect, render_template, session, flash #Imports for Flask server
 from datetime import datetime
 import re
+import string
 from hash_utils import make_pw_hash, check_pw_hash
 
 from flask_sqlalchemy import SQLAlchemy #Importing necessary sqlalchemy tools for using
@@ -73,13 +74,12 @@ def get_current_users():
 
 ##--------------------
 
-## get current users----
+## get current posts----
 def get_all_posts():
 	user_posts = Blog.query.filter_by(hidden=False).order_by(Blog.pub_date.desc()).all()
 	return user_posts
 
 ##--------------------
-
 
 ##login wall
 @app.before_request	#special decorator tells flask to run this function before any request
@@ -101,9 +101,6 @@ def index():
 	hidden_user_posts = Blog.query.filter_by(owner=user, hidden=True).order_by(Blog.pub_date.desc()).all()
 	return render_template('/index.html',title="Blogz",user_posts=user_posts,
 		hidden_user_posts=hidden_user_posts)
-
-	# return render_template('/all_posts.html',title="Blogz",user_posts=user_posts,
-	# 	hidden_user_posts=hidden_user_posts,email=user_email)
 ##----------
 
 @app.route("/single_user_posts")
@@ -113,7 +110,11 @@ def single_user_posts():
 	user = User.query.filter_by(email=user_email).first()
 	user_name = user.user_name
 	title = user_name + "'s blog"
-	user_posts = Blog.query.filter_by(owner=user, hidden=False).order_by(Blog.pub_date.desc()).all()
+
+	page = request.args.get('page',1, type=int) #gets page of the paginated result to display
+									  			#default is 1, with type set to integer
+	user_posts = Blog.query.filter_by(owner=user, hidden=False).order_by(Blog.pub_date.desc()).paginate(page=page, per_page=2)
+	#user_posts = Blog.query.filter_by(owner=user, hidden=False).order_by(Blog.pub_date.desc()).all()
 	if user_email:
 		if 'email' in session and user_email == session['email']:
 			hidden_user_posts = Blog.query.filter_by(owner=user, hidden=True).order_by(Blog.pub_date.desc()).all()
@@ -123,16 +124,18 @@ def single_user_posts():
 		hidden_user_posts=hidden_user_posts,email=user_email,user_name=user_name)
 ##----------
 
-
 ##all_posts
 @app.route("/all_posts")
 def all_posts():
 	encoded_error = request.args.get("error")
 	if 'email' in session:
 		user = User.query.filter_by(email=session['email']).first()
-	user_posts = get_all_posts()
-	#user_posts = Blog.query.filter_by(owner=user, hidden=False).order_by(Blog.pub_date.desc()).all()
-	#hidden_user_posts = Blog.query.filter_by(owner=user, hidden=True).order_by(Blog.pub_date.desc()).all()
+
+	page = request.args.get('page',1, type=int) #gets page of the paginated result to display
+									  			#default is 1, with type set to integer
+	user_posts = Blog.query.filter_by(hidden=False).order_by(Blog.pub_date.desc()).paginate(page=page, per_page=2)
+	#user_posts = Blog.query.filter_by(hidden=False).order_by(Blog.pub_date.desc()).all()
+	#user_posts = get_all_posts()
 	return render_template('/all_posts.html',title="Blogz",user_posts=user_posts)
 ##----------
 
@@ -147,21 +150,19 @@ def register():
 
 		existing_user = User.query.filter_by(email=email).first()
 		existing_user_name = User.query.filter_by(user_name=user_name).first()
+
 		if existing_user:
-			flash('user with email {} already exists.'.format(email),'error')
-			#return redirect('/register')
+			flash('user with email {} already exists.  Please select another user name.'.format(email),'error')
 			return render_template('register.html',form_email=email,title="Blogz Registration",
 				form_user_name=user_name)
 
 		if existing_user_name:
-			flash('user with user_name {} already exists.'.format(user_name),'error')
-			#return redirect('/register')
+			flash('user with user name {} already exists.'.format(user_name),'error')
 			return render_template('register.html',form_email=email,title="Blogz Registration",
 				form_user_name=user_name)
 
 		if not is_email(email):
 			flash('{} is not a valid email address'.format(email),'error')
-			#return redirect('/register')
 			return render_template('register.html',form_email=email,title="Blogz Registration",
 				form_user_name=user_name)
 
@@ -169,7 +170,7 @@ def register():
 			flash('please choose a user name','error')
 			return render_template('register.html',form_email=email,title="Blogz Registration",
 				form_user_name=user_name)
-			#return redirect('/register')
+			
 
 		if password != verify:
 			flash('password and verification do not match.','error')
@@ -231,7 +232,6 @@ def entry():
 def display_entry():
 	pub_date = request.args.get('date_time')
 	user_email = request.args.get('email')
-	#user = User.query.filter_by(email=session['email']).first()
 	user = User.query.filter_by(email=user_email).first()
 	user_name=user.user_name
 	owner_id = user.id
@@ -250,7 +250,6 @@ def home():
 	users=get_current_users()
 	return render_template('home.html', title="Blogz",users=users)
 ##--------------
-
 
 ##Existing user login
 @app.route('/login', methods = ['POST','GET'])
@@ -298,7 +297,6 @@ def unhide():
 	db.session.add(unhide_post)
 	db.session.commit()
 	return redirect('/single_user_posts?email={}'.format(user_email))
-	#return redirect('/all_posts')
 ##-----------
 
 ##Delete post
@@ -321,7 +319,6 @@ def delete():
 	delete_post = Blog.query.get(post_id)
 	db.session.delete(delete_post)
 	db.session.commit()
-	#return redirect('/all_posts')
 	return redirect('/single_user_posts?email={}'.format(session['email']))
 ##------------
 
