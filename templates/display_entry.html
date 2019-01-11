@@ -5,10 +5,13 @@
   {% if not post_hidden %}
   <p class="post">{{post_body}}</p>
   <p class="author">written by <a href='/single_user_posts?email={{user_email}}'>{{user_name}}</a></p>
+  {%if user_email == session['email']%}
   <form action="/hide" method="POST">
   		<input name="post_id" value="{{post_id}}" type="hidden" />
+      <input name="user_email" value="{{user_email}}" type="hidden"/>
   		<input class="caution" type="submit" value="Hide Post"/>
   </form>
+  {%endif%}
   {% else %}
   <p class="post">{{post_body}}</p>
 

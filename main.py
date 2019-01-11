@@ -93,12 +93,16 @@ def require_login():
 ##Main page
 @app.route("/")
 def index():
+	return redirect('/home')
 	encoded_error = request.args.get("error")
 	user = User.query.filter_by(email=session['email']).first()
 	user_posts = Blog.query.filter_by(owner=user, hidden=False).order_by(Blog.pub_date.desc()).all()
 	hidden_user_posts = Blog.query.filter_by(owner=user, hidden=True).order_by(Blog.pub_date.desc()).all()
 	return render_template('/index.html',title="Blogz",user_posts=user_posts,
 		hidden_user_posts=hidden_user_posts)
+
+	# return render_template('/all_posts.html',title="Blogz",user_posts=user_posts,
+	# 	hidden_user_posts=hidden_user_posts,email=user_email)
 ##----------
 
 @app.route("/single_user_posts")
@@ -107,7 +111,11 @@ def single_user_posts():
 	user_email = request.args.get("email")
 	user = User.query.filter_by(email=user_email).first()
 	user_posts = Blog.query.filter_by(owner=user, hidden=False).order_by(Blog.pub_date.desc()).all()
-	hidden_user_posts = Blog.query.filter_by(owner=user, hidden=True).order_by(Blog.pub_date.desc()).all()
+	if user_email:
+		if 'email' in session and user_email == session['email']:
+			hidden_user_posts = Blog.query.filter_by(owner=user, hidden=True).order_by(Blog.pub_date.desc()).all()
+		else:
+			hidden_user_posts = None
 	return render_template('/all_posts.html',title="Blogz",user_posts=user_posts,
 		hidden_user_posts=hidden_user_posts,email=user_email)
 ##----------
@@ -270,12 +278,13 @@ def login():
 ##Hide post
 @app.route('/hide', methods= ['POST'])
 def hide():
+	user_email = request.form['user_email']
 	post_id = request.form['post_id']
 	hide_post = Blog.query.get(post_id)
 	hide_post.hidden = True
 	db.session.add(hide_post)
 	db.session.commit()
-	return redirect('/all_posts')
+	return redirect('/single_user_posts?email={}'.format(user_email))
 ##-----------
 
 ##unHide post
