@@ -3,7 +3,11 @@
   {%if user_posts%}
   <h1 class="direction">blog posts!</h1>
   {%else%}
+  {%if user_name%}
+  <h3 class="direction">{{user_name}} has no posts to view</h3>
+  {%else%}
   <h3 class="direction">No new posts to view</h3>
+  {%endif%}
   {%endif%}
   {% for post in user_posts %}
   <div ><h3 id="title_time"><a href="/display_entry?date_time={{post.pub_date}}&hidden=0&email={{post.owner.email}}">
@@ -12,8 +16,9 @@
   <p class="author">written by <a href='/single_user_posts?email={{post.owner.email}}'>{{post.owner.user_name}}</a></p>
   
   {% endfor %}
-  <hr>
+  
   {% if hidden_user_posts %}
+  <hr>
   <h2>Hidden posts</h2>
   {% for post in hidden_user_posts %}
   <div ><h3 id="title_time"><a href="/display_entry?date_time={{post.pub_date}}&hidden=1&email={{post.owner.email}}">

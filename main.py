@@ -110,14 +110,16 @@ def single_user_posts():
 	encoded_error = request.args.get("error")
 	user_email = request.args.get("email")
 	user = User.query.filter_by(email=user_email).first()
+	user_name = user.user_name
+	title = user_name + "'s blog"
 	user_posts = Blog.query.filter_by(owner=user, hidden=False).order_by(Blog.pub_date.desc()).all()
 	if user_email:
 		if 'email' in session and user_email == session['email']:
 			hidden_user_posts = Blog.query.filter_by(owner=user, hidden=True).order_by(Blog.pub_date.desc()).all()
 		else:
 			hidden_user_posts = None
-	return render_template('/all_posts.html',title="Blogz",user_posts=user_posts,
-		hidden_user_posts=hidden_user_posts,email=user_email)
+	return render_template('/all_posts.html',title=title,user_posts=user_posts,
+		hidden_user_posts=hidden_user_posts,email=user_email,user_name=user_name)
 ##----------
 
 
@@ -218,9 +220,7 @@ def entry():
 		db.session.commit()
 		post_id = blog.id #the id gets assigned after the commit
 		return render_template("display_entry.html",title=post_title, post_body=post_body, post_id=post_id, post_hidden=False,
-			user_email=session['email']) 
-		
-
+			user_email=session['email'],user_name=session['user_name']) 
 	else:
 		return render_template('blog_entry.html',title="Add a Blog Entry")
 ##--------------
