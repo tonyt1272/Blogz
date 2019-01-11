@@ -108,6 +108,7 @@ def single_user_posts():
 	encoded_error = request.args.get("error")
 	user_email = request.args.get("email")
 	user = User.query.filter_by(email=user_email).first()
+	
 	user_name = user.user_name
 	title = user_name + "'s blog"
 
