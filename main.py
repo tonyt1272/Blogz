@@ -317,8 +317,9 @@ def delete():
 		post_body = post.body
 		post_id = post.id
 		post_hidden = post.hidden
+		user_email = session['email']
 		return render_template("display_entry.html",title=title, 
-			post_body=post_body, post_id=post_id, post_hidden=post_hidden, be_sure = be_sure)
+			post_body=post_body, post_id=post_id, post_hidden=post_hidden, be_sure = be_sure, user_email=user_email)
 
 	post_id = request.form['post_id']
 	delete_post = Blog.query.get(post_id)
