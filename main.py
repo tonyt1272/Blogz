@@ -320,7 +320,8 @@ def delete():
 	delete_post = Blog.query.get(post_id)
 	db.session.delete(delete_post)
 	db.session.commit()
-	return redirect('/all_posts')
+	#return redirect('/all_posts')
+	return redirect('/single_user_posts?email={}'.format(session['email']))
 ##------------
 
 ##log out
