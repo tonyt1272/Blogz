@@ -113,7 +113,7 @@ def single_user_posts():
 
 	page = request.args.get('page',1, type=int) #gets page of the paginated result to display
 									  			#default is 1, with type set to integer
-	user_posts = Blog.query.filter_by(owner=user, hidden=False).order_by(Blog.pub_date.desc()).paginate(page=page, per_page=2)
+	user_posts = Blog.query.filter_by(owner=user, hidden=False).order_by(Blog.pub_date.desc()).paginate(page=page, per_page=5)
 	#user_posts = Blog.query.filter_by(owner=user, hidden=False).order_by(Blog.pub_date.desc()).all()
 	if user_email:
 		if 'email' in session and user_email == session['email']:
@@ -121,7 +121,7 @@ def single_user_posts():
 		else:
 			hidden_user_posts = None
 	return render_template('/all_posts.html',title=title,user_posts=user_posts,
-		hidden_user_posts=hidden_user_posts,email=user_email,user_name=user_name)
+		hidden_user_posts=hidden_user_posts,email=user_email,user_name=user_name,single=True)
 ##----------
 
 ##all_posts
@@ -133,7 +133,7 @@ def all_posts():
 
 	page = request.args.get('page',1, type=int) #gets page of the paginated result to display
 									  			#default is 1, with type set to integer
-	user_posts = Blog.query.filter_by(hidden=False).order_by(Blog.pub_date.desc()).paginate(page=page, per_page=2)
+	user_posts = Blog.query.filter_by(hidden=False).order_by(Blog.pub_date.desc()).paginate(page=page, per_page=5)
 	#user_posts = Blog.query.filter_by(hidden=False).order_by(Blog.pub_date.desc()).all()
 	#user_posts = get_all_posts()
 	return render_template('/all_posts.html',title="Blogz",user_posts=user_posts)
@@ -247,7 +247,11 @@ def display_entry():
 ##Home----------
 @app.route('/home')
 def home():
-	users=get_current_users()
+	#users=get_current_users()
+	page = request.args.get('page',1, type=int) #gets page of the paginated result to display
+									  			#default is 1, with type set to integer
+	users = User.query.paginate(page=page, per_page=25)
+	#users=User.query.all()
 	return render_template('home.html', title="Blogz",users=users)
 ##--------------
 

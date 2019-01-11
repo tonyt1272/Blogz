@@ -14,9 +14,38 @@
   {{post.title}}</a> </h3>&nbsp&nbsp posted at:&nbsp{{post.pub_date}}</div>
   <p>{{post.body[0:70]}}...</p>
   <p class="author">written by <a href='/single_user_posts?email={{post.owner.email}}'>{{post.owner.user_name}}</a></p>
-  
   {% endfor %}
-  
+  <hr><span class="author">more posts:</span>
+  {% if single%}
+    {% for page_num in user_posts.iter_pages()%}
+        {%if page_num%}
+          {%if  user_posts.page == page_num%}
+            <a class="current_page" href="/single_user_posts?page={{page_num}}&email={{email}}">{{page_num}}</a>
+          {%else%}
+            <a href="/single_user_posts?page={{page_num}}&email={{email}}">{{page_num}}</a>
+          {%endif%}
+        {% else %}
+          ...
+        {% endif%}
+    {% endfor %}
+
+  {%else%}
+
+    {% for page_num in user_posts.iter_pages()%}
+        {%if page_num%}
+          {%if  user_posts.page == page_num%}
+          <a class="current_page" href="/all_posts?page={{page_num}}">{{page_num}}</a>
+          {%else%}
+          <a href="/all_posts?page={{page_num}}">{{page_num}}</a>
+          {%endif%}
+        {% else %}
+          ...
+        {% endif%}
+    {% endfor %}
+
+  {%endif%}
+
+
   {% if hidden_user_posts %}
   <hr>
   <h2>Hidden posts</h2>

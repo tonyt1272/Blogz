@@ -3,6 +3,11 @@
 		font-style: italic;
 	}
 
+.current_page {
+		color: rgb(72, 244, 66);
+		font-style: italic;
+		font-weight: bold;
+	}
 
 .caution {
 		color: blue;
