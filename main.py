@@ -290,12 +290,14 @@ def hide():
 ##unHide post
 @app.route('/unhide', methods= ['POST'])
 def unhide():
+	user_email = request.form['user_email']
 	post_id = request.form['post_id']
 	unhide_post = Blog.query.get(post_id)
 	unhide_post.hidden = False
 	db.session.add(unhide_post)
 	db.session.commit()
-	return redirect('/all_posts')
+	return redirect('/single_user_posts?email={}'.format(user_email))
+	#return redirect('/all_posts')
 ##-----------
 
 ##Delete post
