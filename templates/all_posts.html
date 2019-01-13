@@ -10,14 +10,16 @@
   {%endif%}
   {%endif%}
   {% for post in user_posts.items %}
-  <div class="container">
+  <div class="container" style="border:1px solid #cecece;">
   <div ><h3 id="title_time"><a href="/display_entry?date_time={{post.pub_date}}&hidden=0&email={{post.owner.email}}">
   {{post.title}}</a> </h3>&nbsp&nbsp posted at:&nbsp{{post.pub_date}}</div>
-  <p><abbr title="{{post.body}}">{{post.body[0:50]}}...</abbr></p>
+  <p><abbr title="{{post.body}}">{{post.body[0:100]}}...</abbr></p>
   <p class="author">written by <a href='/single_user_posts?email={{post.owner.email}}'>{{post.owner.user_name}}</a></p>
   </div>
+  </br>
   {% endfor %}
-  <hr><span class="author">more posts:</span>
+  <div class="container">
+  </hr><span class="author">more posts:</span>
   {% if single%}
     {% for page_num in user_posts.iter_pages()%}
         {%if page_num%}
@@ -46,18 +48,21 @@
     {% endfor %}
 
   {%endif%}
-
+  </div>
 
   {% if hidden_user_posts %}
-  <hr>
+  </hr>
   <div class="container">
   <h2>Hidden posts</h2>
+  </div>
   {% for post in hidden_user_posts %}
-  <div ><h3 id="title_time"><a href="/display_entry?date_time={{post.pub_date}}&hidden=1&email={{post.owner.email}}">
+  <div class="container" style="border:1px solid #cecece;">
+  <div><h3 id="title_time"><a href="/display_entry?date_time={{post.pub_date}}&hidden=1&email={{post.owner.email}}">
   {{post.title}}</a> </h3>&nbsp&nbsp posted at:&nbsp{{post.pub_date}}</div>
   <p>{{post.body[0:70]}}...</p>
   <p class="author">written by <a href='/single_user_posts?email={{post.owner.email}}'>{{post.owner.user_name}}</a></p>
   </div>
+  <hr>
   {% endfor %}
   
   {% endif %}
