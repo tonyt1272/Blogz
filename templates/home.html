@@ -12,6 +12,7 @@
 			<a href='/single_user_posts?email={{user.email}}'>{{user.user_name}}</a>
 		</li>
 		{%endfor%}
+		
 	</ul><hr><span class="author">more users:</span>
 		{% for page_num in users.iter_pages()%}
         {%if page_num%}
