@@ -28,7 +28,7 @@
     		<span style='float: right'>
         {% if 'email' in session %}
         <a href="{{ url_for('single_user_posts', email=session['email'])}}">{{session['user_name']}}</a>:&nbsp
-        <a href="logout">logout</a>
+        <a href="logout">logout</a>&nbsp
         {% else %}  
             <a href="login">login</a> | <a href="register">register&nbsp</a>
         {% endif %}

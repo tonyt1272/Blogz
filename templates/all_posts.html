@@ -22,7 +22,7 @@
     {% for page_num in user_posts.iter_pages()%}
         {%if page_num%}
           {%if  user_posts.page == page_num%}
-            <a class="current_page" href="/single_user_posts?page={{page_num}}&email={{email}}">{{page_num}}</a>
+            <a class="btn btn-info mb-4" href="/single_user_posts?page={{page_num}}&email={{email}}">{{page_num}}</a>
           {%else%}
             <a href="/single_user_posts?page={{page_num}}&email={{email}}">{{page_num}}</a>
           {%endif%}
@@ -36,7 +36,7 @@
     {% for page_num in user_posts.iter_pages()%}
         {%if page_num%}
           {%if  user_posts.page == page_num%}
-          <a class="current_page" href="/all_posts?page={{page_num}}">{{page_num}}</a>
+          <a class="btn btn-info mb-4" href="/all_posts?page={{page_num}}">{{page_num}}</a>
           {%else%}
           <a href="/all_posts?page={{page_num}}">{{page_num}}</a>
           {%endif%}
