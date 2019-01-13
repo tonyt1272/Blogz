@@ -3,8 +3,10 @@
 
   
   {% if not post_hidden %}
+  <div class="container">
   <h3>{{title}}</h3>
   <p class="post">{{post_body}}</p>
+  <!-- <pre>{{post_body}}</pre> -->
   <p class="author">written by <a href='/single_user_posts?email={{user_email}}'>{{user_name}}</a></p>
   {%if user_email == session['email']%}
   <form action="/hide" method="POST">
@@ -13,9 +15,12 @@
   		<input class="caution" type="submit" value="Hide Post"/>
   </form>
   {%endif%}
+  </div>
   {% else %}
+  <div class="container">
   <p class="post">{{post_body}}</p>
-
+  <!-- <pre>{{post_body}}</pre> -->
+  
   <table>
   	<tr>
 	  	<td>
@@ -37,6 +42,7 @@
 	 </tr>
   
 </table>
+</div>
   {% endif %}
   
   

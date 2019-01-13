@@ -2,21 +2,21 @@
 <html>
 	<head lang="en">
 		<meta charset = "utf-8">
-		<!-- <link rel="stylesheet" href="{{ url_for('static', filename='style.css')}}"> -->
+		<link rel="stylesheet" href="{{ url_for('static', filename='style.css')}}">
 		<link rel="shortcut icon" type="image/ico" href="/static/favicon.ico">
-		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<!-- <meta name="viewport" content="width=device-width, initial-scale=1"> -->
 		<!-- Latest compiled and minified CSS -->
 		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
 		<!-- jQuery library -->
-		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+		<!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script> -->
 		<!-- Latest compiled JavaScript -->
-		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+		<!-- <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script> -->
 		<title>Blogz</title>
 	</head>
 	<body>
 		<table style='display: inline-block'>
 			<tr>
-				<td><a href='/home'>home</a>&nbsp&nbsp</td>
+				<td>&nbsp<a href='/home'>home</a>&nbsp&nbsp</td>
 				<td><a href='/all_posts'>all posts</a>&nbsp&nbsp</td>
 				<td><a href='/entry'>new post</a></td>
 
@@ -30,7 +30,7 @@
         <a href="{{ url_for('single_user_posts', email=session['email'])}}">{{session['user_name']}}</a>:&nbsp
         <a href="logout">logout</a>
         {% else %}  
-            <a href="login">login</a> | <a href="register">register</a>
+            <a href="login">login</a> | <a href="register">register&nbsp</a>
         {% endif %}
          
         </span> 
