@@ -142,7 +142,7 @@ def register():
 		session['user_name'] = user.user_name
 		return redirect("/entry")
 	else:
-		return render_template('register.html', title="Build a Blog Registration")
+		return render_template('register.html', title="Blogz Registration")
 ##-------------------
 
 ##Enter blog post
