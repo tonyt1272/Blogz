@@ -3,8 +3,9 @@
 {% block content %}
 <!-- <style>body {background-color: rgb(237, 248, 255);}</style> -->
 <body>
+	<div class="container">
 <h1>Log in!</h1>
-<p>If you don't have an account, you may <a href="/register">register here.</a>
+<p>If you don't have an account, you may <a href="/register">register here.</a></p>
 <form action="/login" method="POST">
 	<table>
 		
@@ -27,5 +28,6 @@
 
 	<label><input type="submit" value="Submit"/></label>
 </form>
+</div>
 </body>
 {% endblock %}

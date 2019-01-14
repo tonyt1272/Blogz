@@ -3,6 +3,7 @@
 {% block content %}
 
 <body>
+	<div class="container">
 <h1>blog users!</h1>
 
 <form action="/login" method="POST">
@@ -26,6 +27,7 @@
           ...
         {% endif%}
     {% endfor %}
-		
+</form>
+</div>		
 </body>
 {% endblock %}
