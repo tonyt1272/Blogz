@@ -21,16 +21,16 @@ def is_email(string):#Regular expression for email validation
 ##-------------
 
 ## get current users----
-def get_current_users():
-	users=User.query.all()
-	return users
+# def get_current_users():
+# 	users=User.query.all()
+# 	return users
 
 ##--------------------
 
 ## get current posts----
-def get_all_posts():
-	user_posts = Blog.query.filter_by(hidden=False).order_by(Blog.pub_date.desc()).all()
-	return user_posts
+# def get_all_posts():
+# 	user_posts = Blog.query.filter_by(hidden=False).order_by(Blog.pub_date.desc()).all()
+# 	return user_posts
 
 ##--------------------
 
