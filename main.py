@@ -48,12 +48,12 @@ def require_login():
 @app.route("/")
 def index():
 	return redirect('/home')
-	encoded_error = request.args.get("error")
-	user = User.query.filter_by(email=session['email']).first()
-	user_posts = Blog.query.filter_by(owner=user, hidden=False).order_by(Blog.pub_date.desc()).all()
-	hidden_user_posts = Blog.query.filter_by(owner=user, hidden=True).order_by(Blog.pub_date.desc()).all()
-	return render_template('/index.html',title="Blogz",user_posts=user_posts,
-		hidden_user_posts=hidden_user_posts)
+	#encoded_error = request.args.get("error")
+	#user = User.query.filter_by(email=session['email']).first()
+	#user_posts = Blog.query.filter_by(owner=user, hidden=False).order_by(Blog.pub_date.desc()).all()
+	#hidden_user_posts = Blog.query.filter_by(owner=user, hidden=True).order_by(Blog.pub_date.desc()).all()
+	#return render_template('/index.html',title="Blogz",user_posts=user_posts,
+	#	hidden_user_posts=hidden_user_posts)
 ##----------
 
 ##Disply all posts from a single user
