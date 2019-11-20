@@ -9,7 +9,7 @@ def make_pw_hash(password, salt=None):
 	if not salt:
 		salt=make_salt()
 	hash = hashlib.sha256(str.encode(password + salt)).hexdigest()
-	return '{0},{1}'.format(hash,salt)
+	return '{},{}'.format(hash,salt)
 
 def check_pw_hash(password, hash):
 	salt = hash.split(',')[1]
