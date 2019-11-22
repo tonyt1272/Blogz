@@ -265,6 +265,11 @@ def logout():
 	return redirect('/all_posts')
 ##---------
 
+
+@app.errorhandler(404)
+def error_404(error):
+    return render_template('error_pages/404.html') , 404
+
 if __name__ == '__main__':
 	app.run()				#use this with development server, only local host can access
 
