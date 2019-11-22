@@ -7,7 +7,7 @@ Migrate(app,db)
 """ This connects the application to the database in order to add on migration capabilities such as adding
     columns to the database.  To enable the line above do the following in console.:
                                    1) cd to the package directory, in this case
-                                    C:\...\DataScienceRefresher\Flask_Puppy_Adoption_Demo
+                                    C:\...\Blogz
                                    2) type: set FLASK_APP=models.py in console
                                    3) type: flask db init in console
                                    4) type: flask db migrate -m "created * table" in console (your notes for what was created)
