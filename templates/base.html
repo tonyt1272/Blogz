@@ -2,16 +2,17 @@
 <html>
 	<head lang="en">
 		<meta charset = "utf-8">
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
 		<link rel="stylesheet" href="{{ url_for('static', filename='style.css')}}">
 		<link rel="shortcut icon" type="image/ico" href="/static/favicon.ico">
 		<!-- <meta name="viewport" content="width=device-width, initial-scale=1"> -->
 		<!-- Latest compiled and minified CSS -->
-		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+
 		<!-- jQuery library -->
 		<!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script> -->
 		<!-- Latest compiled JavaScript -->
 		<!-- <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script> -->
-		<title>Blogz</title>
+		<title>T-Blogz</title>
 	</head>
 	<body>
 		<nav class="navbar navbar-default">
@@ -24,7 +25,7 @@
 		      <li ><a href="/entry">new post</a></li>
 		    </ul>
 		    <ul class="nav navbar-nav navbar-right">
-		      {% if 'email' in session %}
+		      {% if 'email' in session %}	<!--url_for('url route',arguments=arguments of get request-->
 		        <li><a href="{{ url_for('single_user_posts', email=session['email'])}}"><span class="glyphicon glyphicon-user"></span> {{session['user_name']}}</a></li>
 		        <li><a href="logout"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
 		      {%else%}

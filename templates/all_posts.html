@@ -9,6 +9,8 @@
   <h3 class="direction">No new posts to view</h3>
   {%endif%}
   {%endif%}
+  <!-- the user_posts variable below is of type pagination Class.  It comes is something like a list but has a .items
+  method that allows for the calling of all items in the pagination-->
   {% for post in user_posts.items %}
   <div class="container" style="border:1px solid #cecece;">
   <div ><h3 id="title_time"><a href="/display_entry?date_time={{post.pub_date}}&hidden=0&email={{post.owner.email}}">
