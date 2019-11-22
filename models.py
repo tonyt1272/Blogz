@@ -1,6 +1,21 @@
-from app import db
+from app import db,app
 from datetime import datetime
-from hash_utils import make_pw_hash, check_pw_hash
+from hash_utils import make_pw_hash
+from flask_migrate import Migrate
+
+Migrate(app,db)
+""" This connects the application to the database in order to add on migration capabilities such as adding
+    columns to the database.  To enable the line above do the following in console.:
+                                   1) cd to the package directory, in this case
+                                    C:\...\DataScienceRefresher\Flask_Puppy_Adoption_Demo
+                                   2) type: set FLASK_APP=models.py in console
+                                   3) type: flask db init in console
+                                   4) type: flask db migrate -m "created * table" in console (your notes for what was created)
+                                   5) type: flask db upgrade in console to execute the update
+The steps above create a migrations folder in the project which allows for the migration command.  The last two steps
+will create empty tables in accordance with the classes described in the model below.
+To make changes to the database tables, change the the models below, then do the steps above to update the db."""
+#
 
 
 class Blog(db.Model):   # Creating persistent class that represents blog posts within the application
@@ -37,6 +52,9 @@ class User(db.Model):
 													#that populates tasks list with task objects from the Task 
 													#table such that the owner property is equal to this
 													#specific user object, "one to many..."
+
+	profile_image = db.Column(db.String(64),nullable=False,
+							default='default_profile.png')
 
 	def __init__(self, email, password,user_name):
 		self.email = email

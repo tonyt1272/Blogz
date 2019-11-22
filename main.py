@@ -1,6 +1,6 @@
 from flask import request, redirect, render_template, session, flash #Imports for Flask server
 import re
-from hash_utils import make_pw_hash, check_pw_hash
+from hash_utils import check_pw_hash
 from models import User, Blog
 from app import app, db
 from waitress import serve 		#Production server, remove this to use the hello-flask virtual
