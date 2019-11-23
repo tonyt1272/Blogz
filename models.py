@@ -49,8 +49,8 @@ class User(db.Model):
 													#different recotds with the same email
 	pw_hash = db.Column(db.String(120))
 	blogs = db.relationship('Blog', backref='owner')#This is NOT a column, it is a relationship
-													#that populates tasks list with task objects from the Task 
-													#table such that the owner property is equal to this
+													#that populates blog posts with blog objects from the Blog
+													#table where the owner property is equal to this
 													#specific user object, "one to many..."
 
 	profile_image = db.Column(db.String(64),nullable=False,

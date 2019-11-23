@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% block content %}
   {%if user_posts%}
-  <div class="container"><h1 class="direction">blog posts!</h1></div>
+  <div class="container"><h2 class="direction">blog posts!</h2></div>
   {%else%}
   {%if user_name%}
   <h3 class="direction">{{user_name}} has no posts to view</h3>

@@ -15,7 +15,6 @@ def is_email(string):#Regular expression for email validation
 		return False
 ##-------------
 
-
 ##login wall
 @app.before_request	#special decorator tells flask to run this function before any request
 def require_login():
@@ -31,6 +30,17 @@ def require_login():
 def index():
 	return redirect('/home')
 ##----------
+
+##Home----------
+@app.route('/home')
+def home():
+
+	page = request.args.get('page',1, type=int) #gets page of the paginated result to display
+												#default is 1, with type set to integer
+	users = User.query.paginate(page=page, per_page=25)
+
+	return render_template('home.html', title="T-Blogz",users=users)
+##--------------
 
 ##Disply all posts from a single user
 @app.route("/single_user_posts")
@@ -54,7 +64,6 @@ def single_user_posts():
 			hidden_user_posts = None
 	return render_template('/all_posts.html',title=title,user_posts=user_posts,
 		hidden_user_posts=hidden_user_posts,email=user_email,user_name=user_name,single=True)
-
 ##----------
 
 ##all_posts
@@ -71,6 +80,16 @@ def all_posts():
 ##Register new users
 @app.route("/register", methods=['GET', 'POST'])
 def register():
+	if 'email' in session:
+		email = session['email']
+		flash('{} is currently logged in. User must logout before a new user can register.'.format(email),
+			  'alert alert-warning alert-dismissible fade show')
+
+
+		page = request.args.get('page', 1, type=int)  # gets page of the paginated result to display
+		users = User.query.paginate(page=page, per_page=25)
+		return render_template('home.html', title="T-Blogz", users=users)
+
 	if request.method == 'POST':
 		email = request.form['email']
 		user_name = request.form['user_name']
@@ -173,17 +192,6 @@ def display_entry():
 	 post_id=post_id, post_hidden=post_hidden,user_email=user_email,user_name=user_name) 
 ##--------------
 
-##Home----------
-@app.route('/home')
-def home():
-
-	page = request.args.get('page',1, type=int) #gets page of the paginated result to display
-												#default is 1, with type set to integer
-	users = User.query.paginate(page=page, per_page=25)
-
-	return render_template('home.html', title="T-Blogz",users=users)
-##--------------
-
 ##Existing user login
 @app.route('/login', methods=['POST','GET'])
 def login():
@@ -268,7 +276,8 @@ def logout():
 
 @app.errorhandler(404)
 def error_404(error):
-    return render_template('error_pages/404.html') , 404
+	return render_template('error_pages/404.html') , 404
+
 
 if __name__ == '__main__':
 	app.run()				#use this with development server, only local host can access

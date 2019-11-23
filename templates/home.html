@@ -4,14 +4,17 @@
 
 <body>
 	<div class="container">
-<h1>blog users!</h1>
+<h2>blog users!</h2>
+{% if 'email' not in session%}
 <div class="row">
     <div class="col-sm-4">
     	<container>
-      <p class="alert alert-info" role="alert">New user? &nbsp&nbsp<a role="alert" href="register">&nbsp&nbsp<span class="glyphicon glyphicon-plus"></span> register here</a></p>
+      <p class="alert alert-info" role="alert">New user? &nbsp&nbsp<a role="alert" href="register">
+          &nbsp&nbsp<span class="glyphicon glyphicon-plus"></span> register here</a></p>
       	</container>
     </div>
 </div>
+{% endif%}
 
 <form action="/login" method="POST">
 	<ul>

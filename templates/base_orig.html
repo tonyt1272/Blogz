@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+	<head lang="en">
+		<meta charset = "utf-8">
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+
+		<link rel="stylesheet" href="{{ url_for('static', filename='style.css')}}">
+		<link rel="shortcut icon" type="image/ico" href="/static/favicon.ico">
+		 <meta name="viewport" content="width=device-width, initial-scale=1">
+		<!-- Latest compiled and minified CSS -->
+
+		<!-- jQuery library -->
+		 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+		<!-- Latest compiled JavaScript -->
+		 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+		<title>T-Blogz</title>
+	</head>
+	<body>
+		<nav class="navbar navbar-default">
+		  <div class="container-fluid">
+		    <div class="navbar-header">
+		      <a class="navbar-brand" href="/home">home</a>
+		    </div>
+		    <ul class="nav navbar-nav">
+		      <li ><a href="/all_posts">all posts</a></li>
+		      <li ><a href="/entry">new post</a></li>
+		    </ul>
+		    <ul class="nav navbar-nav navbar-right">
+		      {% if 'email' in session %}	<!--url_for('url route',arguments=arguments of get request-->
+		        <li><a class="nav-link" href="{{ url_for('single_user_posts', email=session['email'])}}"><span class="glyphicon glyphicon-user"></span> {{session['user_name']}}</a></li>
+		        <li><a class="nav-link" href="logout"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
+		      {%else%}
+		        <li><a class="nav-link" href="login"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
+		        <li><a class="nav-link" href="register"><span class="glyphicon glyphicon-plus"></span> register</a></li>
+		      {%endif%}
+		    </ul>
+		  </div>
+		</nav> 
+    		<center class="jumbotron"><h1>{{title}}</h1></center>
+		
+		{% with messages = get_flashed_messages(with_categories=True) %} <!-- set messages equal to
+													 whatever is in flashed messages, but the message variable  is limited to this with block, also this
+													 clears the messages, with_categories gets the category -->
+
+			{% for category, message in messages %}
+				<ul>
+					<li class={{category}}>
+						{{message}}
+					</li>
+				</ul>
+
+			{% endfor %}
+
+
+		{% endwith %}
+		
+		{% block content %}
+
+		{% endblock %}
+
+	</body>
+</html>
